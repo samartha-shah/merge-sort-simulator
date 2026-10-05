@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Merge Sort Simulator — Samartha Shah</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#07070f;--tx:#e9ecff;--mu:#8a8fb5;--bl:#18d8ff;--or:#ff9f1c;--gr:#2dff9a;--rd:#ff3d81;--pu:#9b5cff}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;color:var(--tx);font-family:"Segoe UI",system-ui,sans-serif;line-height:1.5;background:var(--bg);min-height:100vh;
+background-image:radial-gradient(900px 500px at 15% -10%,rgba(155,92,255,.28),transparent 60%),radial-gradient(800px 500px at 90% 0%,rgba(24,216,255,.2),transparent 60%),linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:auto,auto,36px 36px,36px 36px;background-attachment:fixed}
+main{max-width:900px;margin:0 auto;padding:22px 16px 48px}
+header{text-align:center;margin-bottom:20px}
+.by{display:inline-block;padding:5px 16px;border-radius:99px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--tx);border:1px solid rgba(24,216,255,.5);background:rgba(24,216,255,.08);box-shadow:0 0 18px rgba(24,216,255,.35),inset 0 0 12px rgba(155,92,255,.2)}
+.by b{background:linear-gradient(90deg,var(--bl),var(--pu),var(--rd));-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:800}
+h1{font-size:clamp(30px,7vw,52px);margin:12px 0 2px;font-weight:900;letter-spacing:-.02em;background:linear-gradient(90deg,var(--bl),var(--pu),var(--rd),var(--bl));background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:flow 6s linear infinite;filter:drop-shadow(0 0 18px rgba(155,92,255,.5))}
+@keyframes flow{to{background-position:300% 0}}
+.sub{color:var(--mu);margin:0;font-size:14px}
+.card{background:rgba(18,18,38,.65);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(155,92,255,.3);border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 8px 40px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.03) inset}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+input[type=text]{flex:1;min-width:180px;padding:10px 12px;border:1px solid rgba(24,216,255,.35);border-radius:10px;background:rgba(0,0,0,.4);color:var(--tx);font:15px ui-monospace,Consolas,monospace;outline:none}
+input[type=text]:focus{box-shadow:0 0 0 2px rgba(24,216,255,.5),0 0 18px rgba(24,216,255,.35)}
+button{padding:9px 14px;border:1px solid rgba(155,92,255,.5);border-radius:10px;background:rgba(155,92,255,.12);color:var(--tx);cursor:pointer;font-size:14px;font-weight:600;transition:.15s}
+button:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 0 16px rgba(155,92,255,.6);background:rgba(155,92,255,.25)}
+button.p{background:linear-gradient(90deg,var(--pu),var(--bl));border-color:transparent;color:#07070f;box-shadow:0 0 18px rgba(24,216,255,.45)}
+button:disabled{opacity:.3;cursor:default}
+input[type=range]{accent-color:var(--pu);vertical-align:middle}
+#bars{display:flex;align-items:flex-end;gap:6px;height:210px;padding:8px 2px 0;border-bottom:1px solid rgba(255,255,255,.12)}
+.b{flex:1;min-width:0;border-radius:8px 8px 2px 2px;background:linear-gradient(180deg,#4a4f7a,#2a2d4d);display:flex;align-items:flex-start;justify-content:center;font:700 13px ui-monospace,Consolas,monospace;color:#fff;transition:height .35s cubic-bezier(.3,1.4,.5,1),background .25s,opacity .25s,box-shadow .25s,transform .25s}
+.b span{margin-top:4px}
+.b.dim{opacity:.28}
+.b.L{background:linear-gradient(180deg,var(--bl),#0a6a8c);box-shadow:0 0 18px rgba(24,216,255,.55)}
+.b.R{background:linear-gradient(180deg,var(--or),#9a5a00);box-shadow:0 0 18px rgba(255,159,28,.55)}
+.b.S{background:linear-gradient(180deg,var(--gr),#0a7a47);box-shadow:0 0 20px rgba(45,255,154,.6)}
+.b.cmp{background:linear-gradient(180deg,var(--rd),#8a1240);box-shadow:0 0 26px var(--rd);transform:translateY(-10px) scale(1.06);animation:pulse .6s ease-in-out infinite alternate}
+@keyframes pulse{to{box-shadow:0 0 40px var(--rd)}}
+.leg{font-size:12px;color:var(--mu);display:flex;gap:14px;flex-wrap:wrap;margin-top:10px}.leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;box-shadow:0 0 8px currentColor}
+.tmp{display:flex;align-items:center;gap:6px;margin:8px 0 0;font-size:13px;flex-wrap:wrap}.tmp b{width:96px;color:var(--mu);font-weight:600}
+.cell{min-width:34px;text-align:center;padding:5px 8px;border:1px solid rgba(255,255,255,.2);border-radius:8px;font:13px ui-monospace,Consolas,monospace;background:rgba(0,0,0,.35)}
+.cell.done{border-color:var(--gr);color:var(--gr);opacity:.5;text-decoration:line-through}
+.cell.cur{border-color:var(--rd);box-shadow:0 0 12px var(--rd)}
+#msg{font-size:15px;min-height:50px;margin-bottom:6px}
+#tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:99px;margin-right:8px;background:linear-gradient(90deg,var(--pu),var(--rd));color:#fff;box-shadow:0 0 14px rgba(255,61,129,.5)}
+#log{max-height:180px;overflow:auto;font-size:13px;color:var(--mu);margin-top:6px}
+#log div{padding:3px 8px;border-radius:6px;cursor:pointer}#log div:hover{background:rgba(255,255,255,.06)}
+#log div.on{color:#07070f;background:linear-gradient(90deg,var(--bl),var(--gr));font-weight:700}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.g .card{margin:0}
+.k{color:var(--bl);font-family:ui-monospace,Consolas,monospace}
+#cnt,#stats{font-size:13px;color:var(--mu)}
+</style></head><body><main>
+<header>
+<span class="by">Done by <b>Samartha Shah</b></span>
+<h1>Merge Sort Simulator</h1>
+<p class="sub">Divide &amp; Conquer — split, sort the halves, merge by comparing.</p>
+</header>
+
+<div class="card"><div class="row">
+<input type="text" id="inp" value="38, 27, 43, 3, 9, 82, 10" aria-label="Array values">
+<button id="set" class="p">Load</button><button id="rnd">🎲 Random</button></div></div>
+
+<div class="card">
+<div id="msg"></div>
+<div id="bars"></div>
+<div class="leg"><span><i style="background:var(--bl);color:var(--bl)"></i>left half</span><span><i style="background:var(--or);color:var(--or)"></i>right half</span><span><i style="background:var(--rd);color:var(--rd)"></i>comparing</span><span><i style="background:var(--gr);color:var(--gr)"></i>merged / sorted</span></div>
+<div id="tmps"></div>
+<div class="row" style="margin-top:14px">
+<button id="first">⏮</button><button id="prev">◀ Back</button><button id="play" class="p">▶ Play</button><button id="next">Next ▶</button><button id="last">⏭</button>
+<label style="font-size:13px;color:var(--mu)">Speed <input type="range" id="spd" min="1" max="10" value="5"></label>
+<span id="cnt" style="margin-left:auto"></span></div>
+</div>
+
+<div class="g">
+<div class="card"><b>Step log</b> <small style="color:var(--mu)">(click to jump)</small><div id="log"></div></div>
+<div class="card"><b>Complexity</b><div style="margin-top:8px">Time: <span class="k">O(n log n)</span> best / avg / worst<br>Space: <span class="k">O(n)</span> auxiliary<br>Stable: <span class="k">yes</span><br>Recurrence: <span class="k">T(n) = 2T(n/2) + O(n)</span><br><span id="stats"></span></div></div>
+</div>
+
+<script>
+let A=[],S=[],idx=0,timer=null;
+const $=id=>document.getElementById(id);
+function rng(x,y){const o=[];for(let q=x;q<=y;q++)o.push(q);return o}
+function build(arr){
+  S=[];let a=arr.slice(),cmp=0;
+  const snap=o=>S.push(Object.assign({a:a.slice(),l:-1,r:-1,m:-1,L:[],R:[],i:-1,j:-1,k:-1,sorted:[],cmp:cmp,t:'info'},o));
+  snap({t:'Start',msg:'Initial unsorted array of '+a.length+' elements.'});
+  (function ms(l,r,d){
+    if(l>=r){snap({t:'Base case',l,r,msg:`Sub-array [${l}] has a single element ${a[l]} — already sorted.`});return}
+    const m=(l+r)>>1;
+    snap({t:'Divide',l,r,m,msg:`Divide indices ${l}..${r} at mid=${m}: left=[${a.slice(l,m+1)}], right=[${a.slice(m+1,r+1)}] (depth ${d}).`});
+    ms(l,m,d+1);ms(m+1,r,d+1);
+    const L=a.slice(l,m+1),R=a.slice(m+1,r+1);let i=0,j=0,k=l;
+    snap({t:'Merge',l,r,m,L,R,i,j,k,msg:`Merge sorted halves [${L}] and [${R}].`});
+    while(i<L.length&&j<R.length){
+      cmp++;const lt=L[i]<=R[j];
+      snap({t:'Compare',l,r,m,L,R,i,j,k,msg:`Compare ${L[i]} (left) with ${R[j]} (right): ${lt?L[i]+' ≤ '+R[j]+', take from left':L[i]+' > '+R[j]+', take from right'}.`});
+      if(lt){a[k++]=L[i++]}else{a[k++]=R[j++]}
+      snap({t:'Place',l,r,m,L,R,i,j,k,sorted:rng(l,k-1),msg:`Place ${a[k-1]} at index ${k-1}.`});
+    }
+    while(i<L.length){a[k++]=L[i++];snap({t:'Copy',l,r,m,L,R,i,j,k,sorted:rng(l,k-1),msg:`Right half exhausted — copy leftover ${a[k-1]} from left.`})}
+    while(j<R.length){a[k++]=R[j++];snap({t:'Copy',l,r,m,L,R,i,j,k,sorted:rng(l,k-1),msg:`Left half exhausted — copy leftover ${a[k-1]} from right.`})}
+    snap({t:'Merged',l,r,sorted:rng(l,r),msg:`Indices ${l}..${r} are now sorted: [${a.slice(l,r+1)}].`});
+  })(0,a.length-1,0);
+  snap({t:'Done',sorted:rng(0,a.length-1),msg:`Sorted array: [${a}] — ${cmp} comparisons. 🎉`});
+}
+function draw(){
+  const s=S[idx],mx=Math.max(...A,1);
+  $('bars').innerHTML=s.a.map((v,q)=>{
+    let c='b';
+    if(s.l>=0&&(q<s.l||q>s.r))c+=' dim';
+    else if(s.m>=0&&s.l>=0)c+=q<=s.m?' L':' R';
+    if(s.sorted.includes(q))c=c.replace(/ [LR]\b/,'')+' S';
+    if(s.t==='Done')c='b S';
+    if(s.t==='Compare'&&(q===s.l+s.i||q===s.m+1+s.j))c+=' cmp';
+    return `<div class="${c}" style="height:${Math.max(16,v/mx*100)}%"><span>${v}</span></div>`}).join('');
+  const show=['Merge','Compare','Place','Copy'].includes(s.t);
+  $('tmps').innerHTML=show?['L','R'].map(n=>{const arr=s[n],p=n==='L'?s.i:s.j;return `<div class="tmp"><b>${n==='L'?'Left temp':'Right temp'}</b>`+arr.map((v,q)=>`<span class="cell ${q<p?'done':''} ${q===p&&s.t==='Compare'?'cur':''}">${v}</span>`).join('')+'</div>'}).join(''):'';
+  $('msg').innerHTML=`<span id="tag">${s.t}</span>${s.msg}`;
+  $('cnt').textContent=`Step ${idx+1} / ${S.length}`;
+  $('stats').textContent=`Comparisons so far: ${s.cmp}`;
+  $('log').innerHTML=S.map((x,q)=>`<div class="${q===idx?'on':''}" data-q="${q}">${q+1}. ${x.t}</div>`).join('');
+  const on=$('log').querySelector('.on');if(on)on.scrollIntoView({block:'nearest'});
+  $('first').disabled=$('prev').disabled=idx===0;$('next').disabled=$('last').disabled=idx===S.length-1;
+}
+function go(n){idx=Math.max(0,Math.min(S.length-1,n));draw();if(idx===S.length-1)stop()}
+function stop(){clearInterval(timer);timer=null;$('play').textContent='▶ Play'}
+function play(){if(timer){stop();return}if(idx===S.length-1)idx=0;$('play').textContent='⏸ Pause';timer=setInterval(()=>go(idx+1),1100-$('spd').value*100)}
+function load(arr){stop();A=arr;build(A);idx=0;draw()}
+function parse(){return $('inp').value.split(/[\s,]+/).filter(x=>x!=='').map(Number).filter(x=>!isNaN(x)).slice(0,16)}
+$('set').onclick=()=>{const v=parse();if(v.length<2){$('msg').textContent='Enter at least 2 numbers (max 16).';return}load(v)};
+$('rnd').onclick=()=>{const n=6+Math.floor(Math.random()*4),v=Array.from({length:n},()=>1+Math.floor(Math.random()*99));$('inp').value=v.join(', ');load(v)};
+$('next').onclick=()=>go(idx+1);$('prev').onclick=()=>go(idx-1);$('first').onclick=()=>{stop();go(0)};$('last').onclick=()=>{stop();go(S.length-1)};
+$('play').onclick=play;$('spd').oninput=()=>{if(timer){stop();play()}};
+$('log').onclick=e=>{const q=e.target.dataset.q;if(q!==undefined){stop();go(+q)}};
+load(parse());
+</script></main></body></html>
